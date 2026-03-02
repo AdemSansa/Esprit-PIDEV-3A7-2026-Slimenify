@@ -88,7 +88,6 @@ public class RegisterController {
             specializationField.getItems().add(s.getDisplayName());
         }
     }
-
     @FXML
     private void handleAccountTypeChange() {
         boolean isTherapist = "Therapist".equals(accountTypeBox.getValue());
@@ -101,7 +100,7 @@ public class RegisterController {
         // Reset diploma state when switching account type
         selectedDiplomaFile = null;
         diplomaValid = false;
-        if (diplomaFileLabel != null)
+        if (diplomaFileL abel != null)
             diplomaFileLabel.setText("No file selected");
         if (diplomaStatusLabel != null)
             diplomaStatusLabel.setText("");
@@ -283,136 +282,136 @@ public class RegisterController {
                     dobPicker.getStyleClass().add("form-error");
                     errorMsg.append("Birth date is required. ");
 
-                // --- Diploma validation gate ---
-                if (selectedDiplomaFile == null) {
-                    errorMsg.append("Please upload your diploma or certificate. ");
-                    hasError = true;
-                } else if (!diplomaValid) {
-                    errorMsg.append("Your diploma does not contain required psychology keywords. ");
-                    hasError = true;
-                }
-            }
-
-            if (hasError) {
-                throw new Exception(errorMsg.toString().trim());
-            }
-
-            String[] names = fullName.trim().split(" ", 2);
-            String firstName = names[0];
-            String lastName = names.length > 1 ? names[1] : "";
-
-            if ("Therapist".equals(accountType)) {
-                Therapistis therapist = new Therapistis();
-                therapist.setFirstName(firstName);
-                therapist.setLastName(lastName);
-                therapist.setEmail(emailField.getText());
-                therapist.setPassword(passwordField.getText());
-                therapist.setPhoneNumber(phoneField.getText());
-                therapist.setSpecialization(specializationField.getValue());
-                therapist.setConsultationType("ONLINE"); // Use valid DB enum value
-                therapist.setStatus("ACTIVE");
-                therapist.setDiplomaPath(selectedDiplomaFile.getAbsolutePath());
-                therapist.setPhotoUrl(photoUrlField.getText());
-                therapist.setDescription(descriptionArea.getText());
-
-                try {
-                    therapist.setLatitude(Double.parseDouble(latitudeField.getText()));
-                    therapist.setLongitude(Double.parseDouble(longitudeField.getText()));
-                } catch (Exception e) {
-                    therapist.setLatitude(0);
-                    therapist.setLongitude(0);
+                    // --- Diploma validation gate ---
+                    if (selectedDiplomaFile == null) {
+                        errorMsg.append("Please upload your diploma or certificate. ");
+                        hasError = true;
+                    } else if (!diplomaValid) {
+                        errorMsg.append("Your diploma does not contain required psychology keywords. ");
+                        hasError = true;
+                    }
                 }
 
-                // Use captured Face ID photo if available
-                if (capturedFaceUrl != null) {
-                    therapist.setPhotoUrl(capturedFaceUrl);
+                if (hasError) {
+                    throw new Exception(errorMsg.toString().trim());
                 }
 
-                authService.registerTherapist(therapist);
-            } else {
-                User user = new User(
-                        firstName,
-                        lastName,
-                        emailField.getText(),
-                        passwordField.getText());
-                user.setPhone(phoneField.getText());
-                user.setDateOfBirth(Date.valueOf(dobPicker.getValue()));
-                user.setGender(genderBox.getValue());
+                String[] names = fullName.trim().split(" ", 2);
+                String firstName = names[0];
+                String lastName = names.length > 1 ? names[1] : "";
 
-                // Use captured Face ID photo if available
-                if (capturedFaceUrl != null) {
-                    user.setPhotoUrl(capturedFaceUrl);
+                if ("Therapist".equals(accountType)) {
+                    Therapistis therapist = new Therapistis();
+                    therapist.setFirstName(firstName);
+                    therapist.setLastName(lastName);
+                    therapist.setEmail(emailField.getText());
+                    therapist.setPassword(passwordField.getText());
+                    therapist.setPhoneNumber(phoneField.getText());
+                    therapist.setSpecialization(specializationField.getValue());
+                    therapist.setConsultationType("ONLINE"); // Use valid DB enum value
+                    therapist.setStatus("ACTIVE");
+                    therapist.setDiplomaPath(selectedDiplomaFile.getAbsolutePath());
+                    therapist.setPhotoUrl(photoUrlField.getText());
+                    therapist.setDescription(descriptionArea.getText());
+
+                    try {
+                        therapist.setLatitude(Double.parseDouble(latitudeField.getText()));
+                        therapist.setLongitude(Double.parseDouble(longitudeField.getText()));
+                    } catch (Exception e) {
+                        therapist.setLatitude(0);
+                        therapist.setLongitude(0);
+                    }
+
+                    // Use captured Face ID photo if available
+                    if (capturedFaceUrl != null) {
+                        therapist.setPhotoUrl(capturedFaceUrl);
+                    }
+
+                    authService.registerTherapist(therapist);
+                } else {
+                    User user = new User(
+                            firstName,
+                            lastName,
+                            emailField.getText(),
+                            passwordField.getText());
+                    user.setPhone(phoneField.getText());
+                    user.setDateOfBirth(Date.valueOf(dobPicker.getValue()));
+                    user.setGender(genderBox.getValue());
+
+                    // Use captured Face ID photo if available
+                    if (capturedFaceUrl != null) {
+                        user.setPhotoUrl(capturedFaceUrl);
+                    }
+
+                    authService.register(user);
                 }
 
-                authService.register(user);
-            }
-
-            messageLabel.setStyle("-fx-text-fill: green;");
-            messageLabel.setText("Account created successfully ✔");
-            SceneManager.switchScene("/com/example/psy/auth/login.fxml");
-
-        } catch (Exception e) {
-            messageLabel.setStyle("-fx-text-fill: red;");
-            messageLabel.setText(e.getMessage());
-        }
-    }
-
-    @FXML
-    private void handleCaptureFace() {
-        faceStatusLabel.setText("📷 Initialisation de la caméra...");
-        faceStatusLabel.setStyle("-fx-text-fill: blue;");
-
-        CompletableFuture.runAsync(() -> {
-            try {
-                Webcam webcam = Webcam.getDefault();
-                if (webcam == null) {
-                    updateFaceStatus("Caméra non trouvée.", true);
-                    return;
-                }
-
-                webcam.open();
-                BufferedImage image = webcam.getImage();
-                webcam.close();
-
-                if (image == null) {
-                    updateFaceStatus("Échec de la capture.", true);
-                    return;
-                }
-
-                updateFaceStatus("☁ Upload vers ImgBB...", false);
-
-                // Convert to bytes for ImgBB
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                ImageIO.write(image, "jpg", baos);
-                byte[] imageBytes = baos.toByteArray();
-
-                // Upload
-                String url = imgBBService.uploadImage(imageBytes);
-                this.capturedFaceUrl = url;
-
-                // Update UI (Preview and Status)
-                Platform.runLater(() -> {
-                    facePreview.setImage(new Image(new ByteArrayInputStream(imageBytes)));
-                    faceStatusLabel.setText("✅ Face ID configuré !");
-                    faceStatusLabel.setStyle("-fx-text-fill: green;");
-                });
+                messageLabel.setStyle("-fx-text-fill: green;");
+                messageLabel.setText("Account created successfully ✔");
+                SceneManager.switchScene("/com/example/psy/auth/login.fxml");
 
             } catch (Exception e) {
-                e.printStackTrace();
-                updateFaceStatus("Erreur: " + e.getMessage(), true);
+                messageLabel.setStyle("-fx-text-fill: red;");
+                messageLabel.setText(e.getMessage());
             }
-        });
-    }
+        }
 
-    private void updateFaceStatus(String text, boolean isError) {
-        Platform.runLater(() -> {
-            faceStatusLabel.setText(text);
-            faceStatusLabel.setStyle("-fx-text-fill: " + (isError ? "red" : "blue") + ";");
-        });
-    }
+        @FXML
+        private void handleCaptureFace() {
+            faceStatusLabel.setText("📷 Initialisation de la caméra...");
+            faceStatusLabel.setStyle("-fx-text-fill: blue;");
 
-    @FXML
-    private void goToLogin() {
-        SceneManager.switchScene("/com/example/psy/auth/login.fxml");
+            CompletableFuture.runAsync(() -> {
+                try {
+                    Webcam webcam = Webcam.getDefault();
+                    if (webcam == null) {
+                        updateFaceStatus("Caméra non trouvée.", true);
+                        return;
+                    }
+
+                    webcam.open();
+                    BufferedImage image = webcam.getImage();
+                    webcam.close();
+
+                    if (image == null) {
+                        updateFaceStatus("Échec de la capture.", true);
+                        return;
+                    }
+
+                    updateFaceStatus("☁ Upload vers ImgBB...", false);
+
+                    // Convert to bytes for ImgBB
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ImageIO.write(image, "jpg", baos);
+                    byte[] imageBytes = baos.toByteArray();
+
+                    // Upload
+                    String url = imgBBService.uploadImage(imageBytes);
+                    this.capturedFaceUrl = url;
+
+                    // Update UI (Preview and Status)
+                    Platform.runLater(() -> {
+                        facePreview.setImage(new Image(new ByteArrayInputStream(imageBytes)));
+                        faceStatusLabel.setText("✅ Face ID configuré !");
+                        faceStatusLabel.setStyle("-fx-text-fill: green;");
+                    });
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    updateFaceStatus("Erreur: " + e.getMessage(), true);
+                }
+            });
+        }
+
+        private void updateFaceStatus(String text, boolean isError) {
+            Platform.runLater(() -> {
+                faceStatusLabel.setText(text);
+                faceStatusLabel.setStyle("-fx-text-fill: " + (isError ? "red" : "blue") + ";");
+            });
+        }
+
+        @FXML
+        private void goToLogin() {
+            SceneManager.switchScene("/com/example/psy/auth/login.fxml");
+        }
     }
-}
