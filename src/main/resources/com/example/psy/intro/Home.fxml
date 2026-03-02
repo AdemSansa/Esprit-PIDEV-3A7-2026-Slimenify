@@ -70,36 +70,43 @@
         <VBox spacing="0">
 
             <HBox alignment="CENTER_LEFT"
-                  spacing="20"
-                  prefHeight="70"
-                  styleClass="top-header">
+                  spacing="25"
+                  prefHeight="80"
+                  styleClass="top-header-cozy">
 
                 <!-- LEFT : ROLE -->
                 <VBox alignment="CENTER_LEFT" spacing="2">
                     <Label fx:id="RoleLabel"
                            text="ADMIN"
-                           styleClass="role-text"/>
+                           styleClass="role-text-cozy"/>
                     <Label text="Your access level"
-                           styleClass="subtitle-text"/>
+                           styleClass="subtitle-text-cozy"/>
                 </VBox>
 
                 <!-- SPACER -->
                 <Region HBox.hgrow="ALWAYS"/>
 
+                <!-- DYNAMIC SEARCH BAR -->
+
+                
+                <Region prefWidth="15"/>
+
+
+
                 <!-- RIGHT : WELCOME & PROFIL -->
-                <VBox alignment="CENTER_RIGHT" spacing="2">
+                <VBox alignment="CENTER_RIGHT" spacing="2" style="-fx-padding: 0 10 0 10;">
                     <Label fx:id="welcomeLabel"
                            text="Welcome, Adem"
-                           styleClass="welcome-text"/>
+                           styleClass="welcome-text-cozy"/>
                     <Label text="Glad to see you again 👋"
-                           styleClass="subtitle-text"/>
+                           styleClass="subtitle-text-cozy"/>
                 </VBox>
 
                 <!-- AVATAR DYNAMIQUE (CLIQUABLE) -->
-                <StackPane fx:id="headerAvatarPane" onMouseClicked="#goToProfile" prefHeight="44.0" prefWidth="44.0"
-                           style="-fx-alignment: center; -fx-cursor: hand;">
+                <StackPane fx:id="headerAvatarPane" onMouseClicked="#goToProfile" prefHeight="48.0" prefWidth="48.0"
+                           styleClass="avatar-circle-cozy">
                     <children>
-                        <Label fx:id="headerAvatarLabel" text="A" styleClass="avatar-text" />
+                        <Label fx:id="headerAvatarLabel" text="A" styleClass="avatar-text-cozy" />
                     </children>
                 </StackPane>
 

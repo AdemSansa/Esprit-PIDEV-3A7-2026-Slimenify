@@ -9,6 +9,7 @@ import javafx.scene.layout.StackPane;
 import util.SceneManager;
 import util.Session;
 import util.AvatarUtil;
+import Service.QuizResultService;
 
 import java.text.BreakIterator;
 
@@ -79,7 +80,8 @@ public class HomeController {
                 RoleLabel.setText(user.getRole());
             }
             if (headerAvatarPane != null && headerAvatarLabel != null) {
-                AvatarUtil.setAvatar(headerAvatarPane, headerAvatarLabel, user.getFirstName(), user.getLastName());
+                AvatarUtil.setAvatar(headerAvatarPane, headerAvatarLabel, user.getFirstName(), user.getLastName(),
+                        user.getPhotoUrl());
             }
 
         } else {
@@ -90,7 +92,20 @@ public class HomeController {
 
         // Tell SceneManager where pages should load
         SceneManager.setContentArea(contentArea);
+
         // Default page could also depend on role, but sticking to dashboard for now
+        if (user != null && "patient".equalsIgnoreCase(user.getRole())) {
+            try {
+                QuizResultService quizResultService = new QuizResultService();
+                if (!quizResultService.hasUserTakenAnyQuiz(user.getId())) {
+                    SceneManager.loadPage("/com/example/psy/QuizAssesment/QuizCinematic.fxml");
+                    return; // Exit early so it doesn't load dashboard
+                }
+            } catch (Exception e) {
+                System.err.println("Error checking patient quiz history: " + e.getMessage());
+            }
+        }
+
         SceneManager.loadPage("/com/example/psy/intro/dashboard.fxml");
     }
 
@@ -230,9 +245,11 @@ public class HomeController {
     public void goToProfile() {
         SceneManager.loadPage("/com/example/psy/User/user_profile.fxml");
     }
+
     public void gotoTherapistDashboard() {
         SceneManager.loadPage("/com/example/psy/dashboards/TherapistDashboard.fxml");
     }
+
     public void goToQuizDashboard() {
         SceneManager.loadPage("/com/example/psy/dashboards/QuizDashboard.fxml");
     }

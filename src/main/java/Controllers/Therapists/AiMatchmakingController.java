@@ -2,7 +2,6 @@ package Controllers.Therapists;
 
 import Entities.Therapistis;
 import Service.AIMatchmakingService;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -189,6 +188,22 @@ public class AiMatchmakingController {
     void handleViewProfile(ActionEvent event) {
         if (currentlyRecommendedTherapist != null) {
             System.out.println("Navigating to therapist profile ID: " + currentlyRecommendedTherapist.getId());
+            try {
+                javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                        getClass().getResource("/com/example/psy/Therapist/therapist_crud.fxml"));
+                javafx.scene.Parent root = loader.load();
+
+                TherapistCRUDController controller = loader.getController();
+                controller.showTherapistProfile(currentlyRecommendedTherapist);
+
+                javafx.scene.Scene scene = new javafx.scene.Scene(root);
+                javafx.stage.Stage stage = (javafx.stage.Stage) ((javafx.scene.Node) event.getSource()).getScene()
+                        .getWindow();
+                stage.setScene(scene);
+                stage.show();
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

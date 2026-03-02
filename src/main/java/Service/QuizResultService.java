@@ -152,6 +152,38 @@ public class QuizResultService implements Iservice<QuizResult> {
     }
 
     /**
+     * Get the number of times a specific quiz was taken.
+     */
+    public int getTimesTaken(long quizId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM quiz_results WHERE quiz_id = ?";
+        try (PreparedStatement ps = dbconnect.getInstance().getConnection().prepareStatement(sql)) {
+            ps.setLong(1, quizId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Check if a specific user has taken any quizzes.
+     */
+    public boolean hasUserTakenAnyQuiz(long userId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM quiz_results WHERE user_id = ?";
+        try (PreparedStatement ps = dbconnect.getInstance().getConnection().prepareStatement(sql)) {
+            ps.setLong(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Get the total number of quizzes taken.
      */
     public int getTotalQuizzesTaken() throws SQLException {
