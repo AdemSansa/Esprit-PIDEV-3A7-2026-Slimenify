@@ -224,6 +224,7 @@ public class HomeController {
     @FXML
     public void goToProfile() {
         SceneManager.loadPage("/com/example/psy/User/user_profile.fxml");
+    }
     public void gotoTherapistDashboard() {
         SceneManager.loadPage("/com/example/psy/dashboards/TherapistDashboard.fxml");
     }
