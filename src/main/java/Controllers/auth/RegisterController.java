@@ -15,6 +15,19 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import util.DiplomaValidator;
 import util.SceneManager;
+import java.sql.Date;
+import java.time.LocalDate;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.Image;
+import java.util.concurrent.CompletableFuture;
+import javafx.application.Platform;
+import com.github.sarxos.webcam.Webcam;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.nio.file.Files;
 
 import java.io.File;
 import java.io.InputStream;
@@ -34,41 +47,42 @@ public class RegisterController {
     private TextField emailField;
     @FXML
     private PasswordField passwordField;
+
     @FXML
-    private VBox therapistFields;
+    private VBox patientFields;
     @FXML
     private TextField phoneField;
     @FXML
-    private ComboBox<String> specializationField;
+    private javafx.scene.control.DatePicker dobPicker;
     @FXML
-    private TextField photoUrlField;
+    private ComboBox<String> genderBox;
+
     @FXML
-    private TextArea descriptionArea;
+    private VBox therapistFields;
     @FXML
-    private TextField latitudeField;
+    private TextField therapistPhoneField;
     @FXML
-    private TextField longitudeField;
+    private TextField specializationField;
+
     @FXML
     private Label messageLabel;
 
-    // Diploma upload UI
     @FXML
-    private Label diplomaFileLabel;
+    private ImageView facePreview;
     @FXML
-    private Label diplomaStatusLabel;
+    private Label faceStatusLabel;
 
-    /** Holds the last file selected by the user via the FileChooser. */
-    private File selectedDiplomaFile = null;
-    /** True only when a file has been chosen and DiplomaValidator approved it. */
-    private boolean diplomaValid = false;
-
+    private String capturedFaceUrl = null;
     private final AuthService authService = AuthService.getInstance();
+    private final Service.ImgBBService imgBBService = Service.ImgBBService.getInstance();
 
     @FXML
     public void initialize() {
         accountTypeBox.setItems(FXCollections.observableArrayList("Patient", "Therapist"));
         accountTypeBox.setValue("Patient");
 
+        genderBox.setItems(FXCollections.observableArrayList("Homme", "Femme", "Autre"));
+        genderBox.setValue("Homme");
         // Populate specialization options
         for (Specialization s : Specialization.values()) {
             specializationField.getItems().add(s.getDisplayName());
@@ -78,9 +92,12 @@ public class RegisterController {
     @FXML
     private void handleAccountTypeChange() {
         boolean isTherapist = "Therapist".equals(accountTypeBox.getValue());
+
         therapistFields.setVisible(isTherapist);
         therapistFields.setManaged(isTherapist);
 
+        patientFields.setVisible(!isTherapist);
+        patientFields.setManaged(!isTherapist);
         // Reset diploma state when switching account type
         selectedDiplomaFile = null;
         diplomaValid = false;
@@ -213,7 +230,9 @@ public class RegisterController {
         emailField.getStyleClass().remove("form-error");
         passwordField.getStyleClass().remove("form-error");
         phoneField.getStyleClass().remove("form-error");
+        therapistPhoneField.getStyleClass().remove("form-error");
         specializationField.getStyleClass().remove("form-error");
+        dobPicker.getStyleClass().remove("form-error");
         messageLabel.setText("");
 
         try {
@@ -242,8 +261,9 @@ public class RegisterController {
             }
 
             if ("Therapist".equals(accountType)) {
-                if (phoneField.getText() == null || !phoneField.getText().matches("^[24579]\\d{7}$")) {
-                    phoneField.getStyleClass().add("form-error");
+                if (therapistPhoneField.getText() == null
+                        || !therapistPhoneField.getText().matches("^[24579]\\d{7}$")) {
+                    therapistPhoneField.getStyleClass().add("form-error");
                     errorMsg.append("Invalid Tunisian phone (8 digits). ");
                     hasError = true;
                 }
@@ -252,6 +272,16 @@ public class RegisterController {
                     errorMsg.append("Specialization is required. ");
                     hasError = true;
                 }
+            } else {
+                // Patient specific validation
+                if (phoneField.getText() == null || !phoneField.getText().matches("^[24579]\\d{7}$")) {
+                    phoneField.getStyleClass().add("form-error");
+                    errorMsg.append("Invalid Tunisian phone (8 digits). ");
+                    hasError = true;
+                }
+                if (dobPicker.getValue() == null) {
+                    dobPicker.getStyleClass().add("form-error");
+                    errorMsg.append("Birth date is required. ");
 
                 // --- Diploma validation gate ---
                 if (selectedDiplomaFile == null) {
@@ -293,6 +323,11 @@ public class RegisterController {
                     therapist.setLongitude(0);
                 }
 
+                // Use captured Face ID photo if available
+                if (capturedFaceUrl != null) {
+                    therapist.setPhotoUrl(capturedFaceUrl);
+                }
+
                 authService.registerTherapist(therapist);
             } else {
                 User user = new User(
@@ -300,6 +335,15 @@ public class RegisterController {
                         lastName,
                         emailField.getText(),
                         passwordField.getText());
+                user.setPhone(phoneField.getText());
+                user.setDateOfBirth(Date.valueOf(dobPicker.getValue()));
+                user.setGender(genderBox.getValue());
+
+                // Use captured Face ID photo if available
+                if (capturedFaceUrl != null) {
+                    user.setPhotoUrl(capturedFaceUrl);
+                }
+
                 authService.register(user);
             }
 
@@ -311,6 +355,60 @@ public class RegisterController {
             messageLabel.setStyle("-fx-text-fill: red;");
             messageLabel.setText(e.getMessage());
         }
+    }
+
+    @FXML
+    private void handleCaptureFace() {
+        faceStatusLabel.setText("📷 Initialisation de la caméra...");
+        faceStatusLabel.setStyle("-fx-text-fill: blue;");
+
+        CompletableFuture.runAsync(() -> {
+            try {
+                Webcam webcam = Webcam.getDefault();
+                if (webcam == null) {
+                    updateFaceStatus("Caméra non trouvée.", true);
+                    return;
+                }
+
+                webcam.open();
+                BufferedImage image = webcam.getImage();
+                webcam.close();
+
+                if (image == null) {
+                    updateFaceStatus("Échec de la capture.", true);
+                    return;
+                }
+
+                updateFaceStatus("☁ Upload vers ImgBB...", false);
+
+                // Convert to bytes for ImgBB
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(image, "jpg", baos);
+                byte[] imageBytes = baos.toByteArray();
+
+                // Upload
+                String url = imgBBService.uploadImage(imageBytes);
+                this.capturedFaceUrl = url;
+
+                // Update UI (Preview and Status)
+                Platform.runLater(() -> {
+                    facePreview.setImage(new Image(new ByteArrayInputStream(imageBytes)));
+                    faceStatusLabel.setText("✅ Face ID configuré !");
+                    faceStatusLabel.setStyle("-fx-text-fill: green;");
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                updateFaceStatus("Erreur: " + e.getMessage(), true);
+            }
+        });
+    }
+
+    private void updateFaceStatus(String text, boolean isError) {
+        Platform.runLater(() -> {
+            faceStatusLabel.setText(text);
+            faceStatusLabel.setStyle("-fx-text-fill: " + (isError ? "red" : "blue") + ";");
+        });
     }
 
     @FXML
