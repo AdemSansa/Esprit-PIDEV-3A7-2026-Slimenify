@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import util.SceneManager;
 import util.Session;
+import util.AvatarUtil;
 
 import java.text.BreakIterator;
 
@@ -35,9 +36,9 @@ public class HomeController {
     @FXML
     private javafx.scene.control.Button btnForum;
     @FXML
-    private javafx.scene.control.Button btnForumtherapist ;
+    private javafx.scene.control.Button btnForumtherapist;
     @FXML
-    private javafx.scene.control.Button btnForumUsr ;
+    private javafx.scene.control.Button btnForumUsr;
     @FXML
     private javafx.scene.control.Button btnRegistrations;
 
@@ -47,6 +48,12 @@ public class HomeController {
     private javafx.scene.control.Button btnQuizzes;
     @FXML
     private javafx.scene.control.Button btnQuizAssessment;
+
+    @FXML
+    private StackPane headerAvatarPane;
+
+    @FXML
+    private javafx.scene.control.Label headerAvatarLabel;
 
     @FXML
     public void initialize() {
@@ -65,9 +72,12 @@ public class HomeController {
             if (welcomeLabel != null) {
                 welcomeLabel.setText("Bienvenue, " + displayName);
             }
-                if (RoleLabel != null) {
-                    RoleLabel.setText(user.getRole());
-                }
+            if (RoleLabel != null) {
+                RoleLabel.setText(user.getRole());
+            }
+            if (headerAvatarPane != null && headerAvatarLabel != null) {
+                AvatarUtil.setAvatar(headerAvatarPane, headerAvatarLabel, user.getFirstName(), user.getLastName());
+            }
 
         } else {
             System.out.println("No user logged in session.");
@@ -108,7 +118,7 @@ public class HomeController {
                 setButtonVisible(btnRegistrations, true);
                 setButtonVisible(btnQuestions, true);
                 setButtonVisible(btnQuizzes, true);
-                setButtonVisible(btnEvents , true);
+                setButtonVisible(btnEvents, true);
                 break;
             case "patient":
                 setButtonVisible(btnTherapists, true); // Patient views therapists
@@ -116,7 +126,7 @@ public class HomeController {
                 setButtonVisible(btnForumUsr, true);
                 setButtonVisible(btnRegistrations, true);
                 setButtonVisible(btnQuizAssessment, true);
-                setButtonVisible(btnEvents , true);
+                setButtonVisible(btnEvents, true);
 
                 break;
             case "therapist":
@@ -126,7 +136,7 @@ public class HomeController {
                 setButtonVisible(btnRegistrations, true);
                 setButtonVisible(btnTherapists, true);
                 setButtonVisible(btnQuizAssessment, true);
-                setButtonVisible(btnEvents , true);
+                setButtonVisible(btnEvents, true);
 
                 break;
             default:
@@ -183,10 +193,12 @@ public class HomeController {
     public void gotoReview() {
         SceneManager.loadPage("/com/example/psy/forum/forum.fxml");
     }
+
     @FXML
     public void gotoReviewtherapist() {
         SceneManager.loadPage("/com/example/psy/forum/forumtherapist.fxml");
     }
+
     @FXML
     public void gotoReviewadmin() {
         SceneManager.loadPage("/com/example/psy/forum/forumadmin.fxml");
@@ -198,6 +210,11 @@ public class HomeController {
 
     public void gotoQuizAssesment() {
         SceneManager.loadPage("/com/example/psy/QuizAssesment/quizList.fxml");
+    }
+
+    @FXML
+    public void goToProfile() {
+        SceneManager.loadPage("/com/example/psy/User/user_profile.fxml");
     }
 
     public void logout() {

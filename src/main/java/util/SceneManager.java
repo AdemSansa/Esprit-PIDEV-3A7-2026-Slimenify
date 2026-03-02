@@ -14,10 +14,13 @@ public class SceneManager {
     public static void setStage(Stage primaryStage) {
         stage = primaryStage;
     }
+
     private static StackPane contentArea;
+
     public static void setContentArea(StackPane pane) {
         contentArea = pane;
     }
+
     public static void switchScene(String fxmlPath) {
         try {
             FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fxmlPath));
@@ -28,6 +31,7 @@ public class SceneManager {
 
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException("Failed to load scene: " + fxmlPath, e);
         }
     }
 
@@ -46,6 +50,7 @@ public class SceneManager {
             return null;
         }
     }
+
     public static void loadPage(String fxmlPath) {
         try {
             if (contentArea == null) {
@@ -79,6 +84,7 @@ public class SceneManager {
             return null;
         }
     }
+
     public static void goBack() {
     }
 }

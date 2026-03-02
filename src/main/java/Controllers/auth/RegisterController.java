@@ -11,6 +11,19 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import util.SceneManager;
+import java.sql.Date;
+import java.time.LocalDate;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.Image;
+import java.util.concurrent.CompletableFuture;
+import javafx.application.Platform;
+import com.github.sarxos.webcam.Webcam;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.nio.file.Files;
 
 public class RegisterController {
     @FXML
@@ -21,28 +34,53 @@ public class RegisterController {
     private TextField emailField;
     @FXML
     private PasswordField passwordField;
+
     @FXML
-    private VBox therapistFields;
+    private VBox patientFields;
     @FXML
     private TextField phoneField;
     @FXML
+    private javafx.scene.control.DatePicker dobPicker;
+    @FXML
+    private ComboBox<String> genderBox;
+
+    @FXML
+    private VBox therapistFields;
+    @FXML
+    private TextField therapistPhoneField;
+    @FXML
     private TextField specializationField;
+
     @FXML
     private Label messageLabel;
 
+    @FXML
+    private ImageView facePreview;
+    @FXML
+    private Label faceStatusLabel;
+
+    private String capturedFaceUrl = null;
     private final AuthService authService = AuthService.getInstance();
+    private final Service.ImgBBService imgBBService = Service.ImgBBService.getInstance();
 
     @FXML
     public void initialize() {
         accountTypeBox.setItems(FXCollections.observableArrayList("Patient", "Therapist"));
         accountTypeBox.setValue("Patient");
+
+        genderBox.setItems(FXCollections.observableArrayList("Homme", "Femme", "Autre"));
+        genderBox.setValue("Homme");
     }
 
     @FXML
     private void handleAccountTypeChange() {
         boolean isTherapist = "Therapist".equals(accountTypeBox.getValue());
+
         therapistFields.setVisible(isTherapist);
         therapistFields.setManaged(isTherapist);
+
+        patientFields.setVisible(!isTherapist);
+        patientFields.setManaged(!isTherapist);
     }
 
     @FXML
@@ -52,7 +90,9 @@ public class RegisterController {
         emailField.getStyleClass().remove("form-error");
         passwordField.getStyleClass().remove("form-error");
         phoneField.getStyleClass().remove("form-error");
+        therapistPhoneField.getStyleClass().remove("form-error");
         specializationField.getStyleClass().remove("form-error");
+        dobPicker.getStyleClass().remove("form-error");
         messageLabel.setText("");
 
         try {
@@ -81,14 +121,27 @@ public class RegisterController {
             }
 
             if ("Therapist".equals(accountType)) {
-                if (phoneField.getText() == null || !phoneField.getText().matches("^[24579]\\d{7}$")) {
-                    phoneField.getStyleClass().add("form-error");
+                if (therapistPhoneField.getText() == null
+                        || !therapistPhoneField.getText().matches("^[24579]\\d{7}$")) {
+                    therapistPhoneField.getStyleClass().add("form-error");
                     errorMsg.append("Invalid Tunisian phone (8 digits). ");
                     hasError = true;
                 }
                 if (specializationField.getText() == null || specializationField.getText().trim().isEmpty()) {
                     specializationField.getStyleClass().add("form-error");
                     errorMsg.append("Specialization is required. ");
+                    hasError = true;
+                }
+            } else {
+                // Patient specific validation
+                if (phoneField.getText() == null || !phoneField.getText().matches("^[24579]\\d{7}$")) {
+                    phoneField.getStyleClass().add("form-error");
+                    errorMsg.append("Invalid Tunisian phone (8 digits). ");
+                    hasError = true;
+                }
+                if (dobPicker.getValue() == null) {
+                    dobPicker.getStyleClass().add("form-error");
+                    errorMsg.append("Birth date is required. ");
                     hasError = true;
                 }
             }
@@ -107,10 +160,15 @@ public class RegisterController {
                 therapist.setLastName(lastName);
                 therapist.setEmail(emailField.getText());
                 therapist.setPassword(passwordField.getText());
-                therapist.setPhoneNumber(phoneField.getText());
+                therapist.setPhoneNumber(therapistPhoneField.getText());
                 therapist.setSpecialization(specializationField.getText());
-                therapist.setConsultationType("ONLINE"); // Use valid DB enum value
+                therapist.setConsultationType("ONLINE");
                 therapist.setStatus("ACTIVE");
+
+                // Use captured Face ID photo if available
+                if (capturedFaceUrl != null) {
+                    therapist.setPhotoUrl(capturedFaceUrl);
+                }
 
                 authService.registerTherapist(therapist);
             } else {
@@ -119,6 +177,15 @@ public class RegisterController {
                         lastName,
                         emailField.getText(),
                         passwordField.getText());
+                user.setPhone(phoneField.getText());
+                user.setDateOfBirth(Date.valueOf(dobPicker.getValue()));
+                user.setGender(genderBox.getValue());
+
+                // Use captured Face ID photo if available
+                if (capturedFaceUrl != null) {
+                    user.setPhotoUrl(capturedFaceUrl);
+                }
+
                 authService.register(user);
             }
 
@@ -130,6 +197,60 @@ public class RegisterController {
             messageLabel.setStyle("-fx-text-fill: red;");
             messageLabel.setText(e.getMessage());
         }
+    }
+
+    @FXML
+    private void handleCaptureFace() {
+        faceStatusLabel.setText("📷 Initialisation de la caméra...");
+        faceStatusLabel.setStyle("-fx-text-fill: blue;");
+
+        CompletableFuture.runAsync(() -> {
+            try {
+                Webcam webcam = Webcam.getDefault();
+                if (webcam == null) {
+                    updateFaceStatus("Caméra non trouvée.", true);
+                    return;
+                }
+
+                webcam.open();
+                BufferedImage image = webcam.getImage();
+                webcam.close();
+
+                if (image == null) {
+                    updateFaceStatus("Échec de la capture.", true);
+                    return;
+                }
+
+                updateFaceStatus("☁ Upload vers ImgBB...", false);
+
+                // Convert to bytes for ImgBB
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(image, "jpg", baos);
+                byte[] imageBytes = baos.toByteArray();
+
+                // Upload
+                String url = imgBBService.uploadImage(imageBytes);
+                this.capturedFaceUrl = url;
+
+                // Update UI (Preview and Status)
+                Platform.runLater(() -> {
+                    facePreview.setImage(new Image(new ByteArrayInputStream(imageBytes)));
+                    faceStatusLabel.setText("✅ Face ID configuré !");
+                    faceStatusLabel.setStyle("-fx-text-fill: green;");
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                updateFaceStatus("Erreur: " + e.getMessage(), true);
+            }
+        });
+    }
+
+    private void updateFaceStatus(String text, boolean isError) {
+        Platform.runLater(() -> {
+            faceStatusLabel.setText(text);
+            faceStatusLabel.setStyle("-fx-text-fill: " + (isError ? "red" : "blue") + ";");
+        });
     }
 
     @FXML

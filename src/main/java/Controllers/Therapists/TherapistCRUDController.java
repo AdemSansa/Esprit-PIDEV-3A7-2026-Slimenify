@@ -19,7 +19,9 @@ import javafx.scene.shape.Circle;
 import util.PasswordUtil;
 import util.SceneManager;
 import util.Session;
-
+import Service.ImgBBService;
+import javafx.stage.FileChooser;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -113,6 +115,7 @@ public class TherapistCRUDController implements Initializable {
     private Button dispo;
 
     private TherapistService service;
+    private final ImgBBService imgBBService = ImgBBService.getInstance();
     private ObservableList<Therapistis> therapistList;
     private Therapistis currentTherapist = null;
     // Therapist currently shown in the profile modal (for RDV navigation)
@@ -149,6 +152,27 @@ public class TherapistCRUDController implements Initializable {
         });
 
         updateVisibility(user.getRole());
+    }
+
+    @FXML
+    private void handleUploadPhoto() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choisir une photo du médecin");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif"));
+
+        File file = fileChooser.showOpenDialog(modalOverlay.getScene().getWindow());
+        if (file != null) {
+            try {
+                // Upload usage
+                String imageUrl = imgBBService.uploadImage(file);
+                photoUrlField.setText(imageUrl);
+                // The listener on photoUrlField will update the preview automatically
+            } catch (Exception e) {
+                showAlert("Erreur", "Impossible d'uploader l'image : " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
 
     // ─── Speciality filter list ───────────────────────────────────────────────

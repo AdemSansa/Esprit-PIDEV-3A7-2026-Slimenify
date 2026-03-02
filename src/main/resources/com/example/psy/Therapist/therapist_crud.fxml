@@ -165,6 +165,15 @@
                     <!-- Info grid -->
                     <VBox spacing="14.0" style="-fx-padding: 22 28 22 28;">
                         <children>
+                            <VBox spacing="5" maxWidth="400.0">
+                                <Label style="-fx-font-weight: bold; -fx-text-fill: #5d4037;" text="URL de la photo" />
+                                <HBox spacing="10">
+                                    <TextField fx:id="photoUrlField" HBox.hgrow="ALWAYS" prefHeight="35.0" promptText="https://example.com/photo.jpg" styleClass="form-control" />
+                                    <Button onAction="#handleApplyPhotoUrl" styleClass="btn-secondary" text="Appliquer" />
+                                </HBox>
+                            </VBox>
+
+                            <Label style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;" text="Entrez une URL de photo ci-dessus pour la mettre à jour" />
                             <!-- Email + Phone -->
                             <HBox spacing="16.0">
                                 <children>
@@ -282,6 +291,8 @@
                                 <Label style="-fx-font-weight: bold; -fx-text-fill: #4e342e;" text="🖼 Photo (URL)" />
                                 <HBox spacing="8.0" alignment="CENTER_LEFT">
                                     <TextField fx:id="photoUrlField" styleClass="form-control" promptText="https://example.com/photo.jpg" HBox.hgrow="ALWAYS" />
+                                    <Button mnemonicParsing="false" onAction="#handleUploadPhoto" styleClass="btn-secondary" text="⬆" 
+                                            style="-fx-padding: 8 12 8 12; -fx-min-width: 40;" />
                                     <!-- Preview thumbnail -->
                                     <StackPane prefWidth="50.0" prefHeight="50.0"
                                                style="-fx-background-color: #f5efe6; -fx-background-radius: 50; -fx-border-color: #d2b48c; -fx-border-radius: 50; -fx-border-width: 1;">

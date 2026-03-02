@@ -56,7 +56,7 @@
             <Button text="Déconnexion"
 
                     styleClass="logout-btn"
-                    onAction="#logout"
+                    onAction="#handleLogout"
                     maxWidth="Infinity"/>        </VBox>
     </left>
 
@@ -81,7 +81,7 @@
                 <!-- SPACER -->
                 <Region HBox.hgrow="ALWAYS"/>
 
-                <!-- RIGHT : WELCOME -->
+                <!-- RIGHT : WELCOME & PROFIL -->
                 <VBox alignment="CENTER_RIGHT" spacing="2">
                     <Label fx:id="welcomeLabel"
                            text="Welcome, Adem"
@@ -90,10 +90,12 @@
                            styleClass="subtitle-text"/>
                 </VBox>
 
-                <!-- AVATAR -->
-                <StackPane>
-                    <Circle radius="22" styleClass="avatar-circle"/>
-                    <Label text="A" styleClass="avatar-text"/>
+                <!-- AVATAR DYNAMIQUE (CLIQUABLE) -->
+                <StackPane fx:id="headerAvatarPane" onMouseClicked="#goToProfile" prefHeight="44.0" prefWidth="44.0"
+                           style="-fx-alignment: center; -fx-cursor: hand;">
+                    <children>
+                        <Label fx:id="headerAvatarLabel" text="A" styleClass="avatar-text" />
+                    </children>
                 </StackPane>
 
             </HBox>
