@@ -45,6 +45,7 @@ public class SceneManager {
 
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException("Failed to load scene: " + fxmlPath, e);
         }
     }
 

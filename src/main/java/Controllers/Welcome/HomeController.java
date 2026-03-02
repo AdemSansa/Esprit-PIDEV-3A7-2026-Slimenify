@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import util.SceneManager;
 import util.Session;
+import util.AvatarUtil;
 
 import java.text.BreakIterator;
 
@@ -49,6 +50,12 @@ public class HomeController {
     private javafx.scene.control.Button btnQuizAssessment;
 
     @FXML
+    private StackPane headerAvatarPane;
+
+    @FXML
+    private javafx.scene.control.Label headerAvatarLabel;
+
+    @FXML
     public void initialize() {
 
         User user = Session.getInstance().getUser();
@@ -67,6 +74,9 @@ public class HomeController {
             }
             if (RoleLabel != null) {
                 RoleLabel.setText(user.getRole());
+            }
+            if (headerAvatarPane != null && headerAvatarLabel != null) {
+                AvatarUtil.setAvatar(headerAvatarPane, headerAvatarLabel, user.getFirstName(), user.getLastName());
             }
 
         } else {
@@ -119,7 +129,6 @@ public class HomeController {
                 setButtonVisible(btnRegistrations, true);
                 setButtonVisible(btnQuizAssessment, true);
                 setButtonVisible(btnEvents, true);
-                setButtonVisible(btnPastAppointments, true);
 
                 break;
             case "therapist":
@@ -212,6 +221,9 @@ public class HomeController {
         SceneManager.loadPage("/com/example/psy/QuizAssesment/quizList.fxml");
     }
 
+    @FXML
+    public void goToProfile() {
+        SceneManager.loadPage("/com/example/psy/User/user_profile.fxml");
     public void gotoTherapistDashboard() {
         SceneManager.loadPage("/com/example/psy/dashboards/TherapistDashboard.fxml");
     }
