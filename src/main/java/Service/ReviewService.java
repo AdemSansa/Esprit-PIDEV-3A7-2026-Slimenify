@@ -85,7 +85,7 @@ public class ReviewService implements Iservice<Review> {
         if (rs.next()) {
             return true;
         }
-        return 0;
+        return false ;
     }
 
     public int countRepliedReviews() throws SQLException {
