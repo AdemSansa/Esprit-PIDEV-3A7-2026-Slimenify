@@ -580,6 +580,21 @@ public class TherapistCRUDController implements Initializable {
         }
     }
 
+    // ─── Profile modal: show programmatically ─────────────────────────────────
+    public void showTherapistProfile(Therapistis t) {
+        // Find the matching therapist in our current loaded list to ensure
+        // all relationships/data are consistent with the current view.
+        // If not found (e.g., filtered out), still show the passed object.
+        Therapistis target = t;
+        for (Therapistis loaded : therapistList) {
+            if (loaded.getId() == t.getId()) {
+                target = loaded;
+                break;
+            }
+        }
+        openProfileModal(target);
+    }
+
     // ─── Profile modal: open & populate ──────────────────────────────────────
     private void openProfileModal(Therapistis t) {
         selectedProfileTherapist = t;
