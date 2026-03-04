@@ -327,11 +327,29 @@ public class AppointmentCalendarController {
         });
     }
 
+
     private void addEntryListeners(Entry<Appointment> entry) {
         entry.intervalProperty().addListener((obs, oldInterval, newInterval) -> {
             Appointment currentAppointment = entry.getUserObject();
             if (currentAppointment == null)
                 return;
+
+            // Prevent patients from modifying details of other patients' appointments
+            if (!isTherapist() && Session.getInstance().getUser() != null &&
+                    currentAppointment.getPatientId() != Session.getInstance().getUser().getId()) {
+
+                Platform.runLater(() -> {
+                    entry.setInterval(
+                            currentAppointment.getAppointmentDate()
+                                    .atTime(currentAppointment.getStartTime())
+                                    .atZone(ZoneId.systemDefault()),
+                            currentAppointment.getAppointmentDate()
+                                    .atTime(currentAppointment.getEndTime())
+                                    .atZone(ZoneId.systemDefault()));
+                    showAlert("You don't have permission to modify this appointment.");
+                });
+                return;
+            }
 
             ZonedDateTime start = newInterval.getStartZonedDateTime();
             ZonedDateTime end = newInterval.getEndZonedDateTime();
