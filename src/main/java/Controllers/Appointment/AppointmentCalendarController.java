@@ -48,6 +48,7 @@ public class AppointmentCalendarController {
     private AppointmentService appointmentService = new AppointmentService();
     private TherapistService therapistService = new TherapistService();
     private Timer videoCallTimer;
+    private java.util.Set<Integer> openedCalls = new java.util.HashSet<>();
 
     private static final int APPOINTMENT_DURATION_MIN = 90;
 
@@ -327,7 +328,6 @@ public class AppointmentCalendarController {
         });
     }
 
-
     private void addEntryListeners(Entry<Appointment> entry) {
         entry.intervalProperty().addListener((obs, oldInterval, newInterval) -> {
             Appointment currentAppointment = entry.getUserObject();
@@ -431,10 +431,14 @@ public class AppointmentCalendarController {
                         LocalDateTime end = a.getAppointmentDate().atTime(a.getEndTime());
 
                         // Start call automatically if now is at start
-                        if ("confirmed".equalsIgnoreCase(a.getStatus()) &&
+                        if (!openedCalls.contains(a.getId()) &&
+                                ("confirmed".equalsIgnoreCase(a.getStatus())
+                                        || "in-progress".equalsIgnoreCase(a.getStatus()))
+                                &&
                                 "Video Call".equalsIgnoreCase(a.getType()) &&
                                 now.isAfter(start.minusSeconds(1)) && now.isBefore(start.plusSeconds(59))) {
 
+                            openedCalls.add(a.getId());
                             Platform.runLater(() -> openVideoCall(a));
                         }
 
