@@ -9,9 +9,7 @@ public class VideoCallService {
 
     public static String generateMeetingLink(int appointmentId) {
         String roomId = "session-" + appointmentId;
-        // meet.jit.si now requires login to start a meeting. Using a community instance
-        // (e.g., Init7) that allows anonymous users
-        return "https://meet.init7.net/" + roomId;
+        return "https://meet.jit.si/" + roomId;
     }
 
     public static boolean isTimeForAppointment(LocalDateTime appointmentTime) {
