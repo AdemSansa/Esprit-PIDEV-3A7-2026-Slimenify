@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Controllers.Blog.ShowCommentController"
+            prefWidth="1000"
+            prefHeight="700"
+            style="-fx-background-color: #f8fafc;">
+
+    <!-- TOP -->
+
+    <top>
+
+        <VBox spacing="20"
+              style="-fx-background-color: white;
+                     -fx-padding: 30;
+                     -fx-background-radius: 0 0 25 25;">
+
+            <Label text="Comments"
+                   style="-fx-font-size: 32;
+                          -fx-font-weight: bold;
+                          -fx-text-fill: #1e293b;" />
+
+            <HBox spacing="15">
+
+                <TextField fx:id="tfSearch"
+                           promptText="Search comment..."
+                           prefWidth="300"
+                           style="-fx-background-radius: 20;
+                                  -fx-padding: 12;" />
+
+                <Button text="Search"
+                        onAction="#searchComment"
+                        style="-fx-background-color: #627255;
+                               -fx-text-fill: white;
+                               -fx-background-radius: 20;
+                               -fx-padding: 12 25;" />
+
+            </HBox>
+
+        </VBox>
+
+    </top>
+
+    <!-- CENTER -->
+
+    <center>
+
+        <ScrollPane fitToWidth="true"
+                    style="-fx-background-color: transparent;">
+
+            <VBox fx:id="commentContainer"
+                  spacing="20"
+                  padding="25" />
+
+        </ScrollPane>
+
+    </center>
+
+</BorderPane>

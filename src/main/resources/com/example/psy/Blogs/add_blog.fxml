@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<StackPane xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="Controllers.Blog.AddBlogController"
+           style="-fx-background-color: #f8fafc;">
+
+    <VBox spacing="20" maxWidth="600" maxHeight="550"
+          style="-fx-background-color: white; -fx-padding: 40; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 5);">
+          
+        <Label text="Create New Story"
+               styleClass="main-title" 
+               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
+
+        <TextField fx:id="tfTitle"
+                   promptText="Enter an engaging title..."
+                   style="-fx-font-size: 14px; -fx-padding: 10; -fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cbd5e1; -fx-background-color: #f8fafc;"/>
+
+        <TextArea fx:id="tfContent"
+                  promptText="Write your story here..."
+                  prefHeight="200"
+                  wrapText="true"
+                  style="-fx-font-size: 14px; -fx-padding: 5; -fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cbd5e1; -fx-background-color: #f8fafc;"/>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <TextField fx:id="tfPhoto"
+                       promptText="Image Path" HBox.hgrow="ALWAYS"
+                       style="-fx-font-size: 14px; -fx-padding: 10; -fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cbd5e1; -fx-background-color: #f8fafc;"/>
+            <Button text="Choose Image"
+                    onAction="#chooseImage"
+                    style="-fx-background-color: #e2e8f0; -fx-text-fill: #475569; -fx-padding: 10 15; -fx-background-radius: 8; -fx-cursor: hand;"/>
+        </HBox>
+
+        <ComboBox fx:id="cbCategory"
+                  promptText="Select Category" maxWidth="Infinity"
+                  style="-fx-font-size: 14px; -fx-padding: 5; -fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cbd5e1; -fx-background-color: #f8fafc;"/>
+
+        <Pane VBox.vgrow="ALWAYS" />
+
+        <Button text="Publish Story"
+                onAction="#addBlog"
+                maxWidth="Infinity"
+                styleClass="header-btn"
+                style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 12; -fx-background-radius: 8; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(59,130,246,0.3), 10, 0, 0, 4);"/>
+
+    </VBox>
+</StackPane>

@@ -75,6 +75,8 @@ module com.example.psy {
     exports Controllers.Therapists;
     exports Controllers.Product;
     opens Controllers.Product to javafx.fxml;
+    exports Controllers.Blog;
+    opens Controllers.Blog to javafx.fxml;
 
     // optional but recommended
 }
