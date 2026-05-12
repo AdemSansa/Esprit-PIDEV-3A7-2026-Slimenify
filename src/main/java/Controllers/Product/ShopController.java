@@ -19,6 +19,8 @@ public class ShopController {
     private FlowPane productsFlowPane;
     @FXML
     private TextField searchField;
+    @FXML
+    private javafx.scene.control.Button addProductBtn;
 
     private final ProductService productService = new ProductService();
     private List<Product> allProducts;
@@ -30,6 +32,18 @@ public class ShopController {
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             filterProducts(newValue);
         });
+
+        // Show add button only for admins
+        util.Session session = util.Session.getInstance();
+        if (session.getUser() != null && "admin".equalsIgnoreCase(session.getUser().getRole())) {
+            addProductBtn.setVisible(true);
+            addProductBtn.setManaged(true);
+        }
+    }
+
+    @FXML
+    public void handleAddProduct() {
+        util.SceneManager.loadPage("/com/example/psy/Product/AddProduct.fxml");
     }
 
     private void loadProducts() {
