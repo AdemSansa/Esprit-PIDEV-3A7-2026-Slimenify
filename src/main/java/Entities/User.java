@@ -13,6 +13,9 @@ public class User {
     private Date dateOfBirth;
     private String gender;
     private String photoUrl;
+    private Date CreatedAt;
+    private Date UpdatedAt;
+
 
     public User() {
     }

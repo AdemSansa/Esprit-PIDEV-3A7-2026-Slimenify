@@ -6,9 +6,10 @@ import java.sql.SQLException;
 
 public class dbconnect {
 
-    private static final String URL = "jdbc:mysql://hopper.proxy.rlwy.net:18471/railway?useSSL=false&serverTimezone=UTC";
-    private static final String USER = "root";
-    private static final String PASSWORD = "PYRthEZypDoWwWASmszfjVLhbfIWiqXB";
+    private static final String URL = "jdbc:mysql://mysql-215c945b-ademsansa7-4324.j.aivencloud.com:28053/slouma?useSSL=false&serverTimezone=UTC";
+    private static final String USER = "avnadmin";
+    private static final String PASSWORD = "AVNS_HLKPMcODDZfHGeEF1Kl";
+
 
     // Singleton instance
     private static dbconnect instance;
