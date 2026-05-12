@@ -52,6 +52,8 @@ public class HomeController {
     private javafx.scene.control.Button btnQuizzes;
     @FXML
     private javafx.scene.control.Button btnQuizAssessment;
+    @FXML
+    private javafx.scene.control.Button btnShop;
 
     @FXML
     private StackPane headerAvatarPane;
@@ -111,7 +113,7 @@ public class HomeController {
 
     private void updateSidebarVisibility(String role) {
         // Default: hide everything or set a baseline
-        setButtonVisible(btnDashboard, true); // Everyone sees dashboard?
+        setButtonVisible(btnDashboard, false); // Everyone sees dashboard?
         setButtonVisible(btnUsers, false);
         setButtonVisible(btnTherapists, false);
         setButtonVisible(btnEvents, false);
@@ -124,6 +126,7 @@ public class HomeController {
         setButtonVisible(btnQuizzes, false);
         setButtonVisible(btnQuizAssessment, false);
         setButtonVisible(btnQuizDash, false);
+        setButtonVisible(btnShop, false);
 
         setButtonVisible(btnPastAppointments, false);
 
@@ -149,6 +152,7 @@ public class HomeController {
                 setButtonVisible(btnRegistrations, true);
                 setButtonVisible(btnQuizAssessment, true);
                 setButtonVisible(btnEvents, true);
+                setButtonVisible(btnShop, true);
 
                 break;
             case "therapist":
@@ -159,7 +163,7 @@ public class HomeController {
                 setButtonVisible(btnTherapists, true);
                 setButtonVisible(btnQuizAssessment, true);
                 setButtonVisible(btnEvents, true);
-
+                setButtonVisible(btnDashboard, true);
                 break;
             default:
                 // Unknown role, minimal access
@@ -239,6 +243,11 @@ public class HomeController {
 
     public void gotoQuizAssesment() {
         SceneManager.loadPage("/com/example/psy/QuizAssesment/quizList.fxml");
+    }
+
+    @FXML
+    public void gotoShop() {
+        SceneManager.loadPage("/com/example/psy/Product/Shop.fxml");
     }
 
     @FXML
