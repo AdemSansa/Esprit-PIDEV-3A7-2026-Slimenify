@@ -56,6 +56,9 @@ public class HomeController {
     private javafx.scene.control.Button btnShop;
 
     @FXML
+    private javafx.scene.control.Button btnBlogs;
+
+    @FXML
     private StackPane headerAvatarPane;
 
     @FXML
@@ -127,6 +130,7 @@ public class HomeController {
         setButtonVisible(btnQuizAssessment, false);
         setButtonVisible(btnQuizDash, false);
         setButtonVisible(btnShop, false);
+        setButtonVisible(btnBlogs, false);
 
         setButtonVisible(btnPastAppointments, false);
 
@@ -144,6 +148,7 @@ public class HomeController {
                 setButtonVisible(btnQuizzes, true);
                 setButtonVisible(btnEvents, true);
                 setButtonVisible(btnQuizDash, true);
+                setButtonVisible(btnBlogs, true);
                 setButtonVisible(btnShop, true);
                 break;
             case "patient":
@@ -154,6 +159,7 @@ public class HomeController {
                 setButtonVisible(btnQuizAssessment, true);
                 setButtonVisible(btnEvents, true);
                 setButtonVisible(btnShop, true);
+                setButtonVisible(btnBlogs, true);
 
                 break;
             case "therapist":
@@ -165,6 +171,7 @@ public class HomeController {
                 setButtonVisible(btnQuizAssessment, true);
                 setButtonVisible(btnEvents, true);
                 setButtonVisible(btnDashboard, true);
+                setButtonVisible(btnBlogs, true);
                 break;
             default:
                 // Unknown role, minimal access
@@ -249,6 +256,11 @@ public class HomeController {
     @FXML
     public void gotoShop() {
         SceneManager.loadPage("/com/example/psy/Product/Shop.fxml");
+    }
+
+    @FXML
+    public void gotoBlogs() {
+        SceneManager.loadPage("/com/example/psy/Blogs/blog_feed.fxml");
     }
 
     @FXML

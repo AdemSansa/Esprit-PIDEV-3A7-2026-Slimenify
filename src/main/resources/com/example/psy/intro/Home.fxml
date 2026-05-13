@@ -50,6 +50,7 @@
                 <Button fx:id="btnQuizzes" text="Quizzes" styleClass="sidebar-btn" onAction="#gotoQuiz" maxWidth="Infinity"/>
                 <Button fx:id="btnQuizAssessment" text="Quiz Assesment (For patient)" styleClass="sidebar-btn" onAction="#gotoQuizAssesment" maxWidth="Infinity"/>
                 <Button fx:id="btnQuizDash" text="Quiz Dashboard" styleClass="sidebar-btn" onAction="#goToQuizDashboard" maxWidth="Infinity"/>
+                <Button fx:id="btnBlogs" text="Blogs" styleClass="sidebar-btn" onAction="#gotoBlogs" maxWidth="Infinity"/>
                 <Button fx:id="btnShop" text="Mini Shop" styleClass="sidebar-btn" onAction="#gotoShop" maxWidth="Infinity"/>
 
             </VBox>
