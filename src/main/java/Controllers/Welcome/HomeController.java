@@ -149,6 +149,7 @@ public class HomeController {
                 setButtonVisible(btnEvents, true);
                 setButtonVisible(btnQuizDash, true);
                 setButtonVisible(btnBlogs, true);
+                setButtonVisible(btnShop, true);
                 break;
             case "patient":
                 setButtonVisible(btnTherapists, true); // Patient views therapists

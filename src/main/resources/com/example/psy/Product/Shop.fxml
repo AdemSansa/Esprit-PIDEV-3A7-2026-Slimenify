@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
@@ -25,6 +26,7 @@
         </VBox>
         <Region HBox.hgrow="ALWAYS"/>
         <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button fx:id="addProductBtn" text="+ Add Product" styleClass="action-btn" onAction="#handleAddProduct" visible="false" managed="false"/>
             <TextField fx:id="searchField" promptText="Search products..." styleClass="search-field" prefWidth="250"/>
         </HBox>
     </HBox>

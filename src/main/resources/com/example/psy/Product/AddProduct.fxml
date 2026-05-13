@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.image.ImageView?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Controllers.Product.AddProductController"
+            stylesheets="@../style.css"
+            styleClass="background-gradient">
+
+    <!-- HEADER -->
+    <top>
+        <HBox spacing="20" alignment="CENTER_LEFT" styleClass="top-header" prefHeight="80">
+            <padding>
+                <Insets left="30" right="30"/>
+            </padding>
+            
+            <Button text="← Back to Shop" onAction="#handleBack" styleClass="btn-secondary"/>
+            
+            <VBox alignment="CENTER_LEFT" spacing="2">
+                <Label text="Product Inventory" styleClass="page-title" style="-fx-text-fill: #2B322E;"/>
+                <Label text="Add a new item to the wellness store" styleClass="page-subtitle" style="-fx-text-fill: #7F8F69;"/>
+            </VBox>
+            
+            <Region HBox.hgrow="ALWAYS"/>
+            
+            <!-- Optional: User Profile snippet in header if needed -->
+        </HBox>
+    </top>
+
+    <!-- CONTENT -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" styleClass="transparent-scroll">
+            <VBox spacing="30" alignment="TOP_CENTER" maxWidth="900">
+                <padding>
+                    <Insets top="40" right="40" bottom="40" left="40"/>
+                </padding>
+
+                <HBox spacing="30" alignment="TOP_CENTER">
+                    
+                    <!-- LEFT COLUMN: Image Preview -->
+                    <VBox spacing="15" alignment="TOP_CENTER" prefWidth="300" styleClass="card">
+                        <padding>
+                            <Insets top="20" right="20" bottom="20" left="20"/>
+                        </padding>
+                        
+                        <Label text="Product Image" styleClass="section-header"/>
+                        
+                        <StackPane fx:id="imagePlaceholder" prefHeight="250" prefWidth="250" 
+                                   style="-fx-background-color: #F3F4ED; -fx-background-radius: 15; -fx-border-color: #C6CBB9; -fx-border-radius: 15; -fx-border-style: dashed;">
+                            <children>
+                                <VBox alignment="CENTER" spacing="10">
+                                    <Label text="No Image Selected" style="-fx-text-fill: #7F8F69;"/>
+                                    <Button text="Select File" onAction="#handleBrowseImage" styleClass="btn-secondary"/>
+                                </VBox>
+                            </children>
+                        </StackPane>
+                        
+                        <TextField fx:id="photoUrlField" promptText="Or paste URL here..." styleClass="form-control" editable="true"/>
+                        
+                        <Label text="Images are automatically optimized and hosted on Cloudinary." 
+                               style="-fx-font-size: 11px; -fx-text-fill: #7F8F69;" wrapText="true" textAlignment="CENTER"/>
+                    </VBox>
+
+                    <!-- RIGHT COLUMN: Details Form -->
+                    <VBox spacing="15" HBox.hgrow="ALWAYS" styleClass="card">
+                        <padding>
+                            <Insets top="20" right="20" bottom="20" left="20"/>
+                        </padding>
+                        
+                        <Label text="General Information" styleClass="section-header"/>
+                        
+                        <GridPane hgap="20" vgap="15">
+                            <columnConstraints>
+                                <ColumnConstraints minWidth="120" prefWidth="120"/>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                            </columnConstraints>
+
+                            <!-- Name -->
+                            <Label text="Product Name" styleClass="field-label" style="-fx-text-fill: #2B322E;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                            <TextField fx:id="nameField" promptText="e.g. Lavender Essential Oil" styleClass="form-control" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                            <!-- Category -->
+                            <Label text="Category" styleClass="field-label" style="-fx-text-fill: #2B322E;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                            <ComboBox fx:id="categoryComboBox" promptText="Select category" maxWidth="Infinity" styleClass="form-control" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                            <!-- Price & Stock in one row -->
+                            <HBox spacing="15" GridPane.rowIndex="2" GridPane.columnIndex="1">
+                                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                    <Label text="Price ($)" styleClass="field-label" style="-fx-text-fill: #2B322E;"/>
+                                    <TextField fx:id="priceField" promptText="0.00" styleClass="form-control"/>
+                                </VBox>
+                                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                    <Label text="Stock" styleClass="field-label" style="-fx-text-fill: #2B322E;"/>
+                                    <TextField fx:id="stockField" promptText="0" styleClass="form-control"/>
+                                </VBox>
+                            </HBox>
+                            <Label text="Pricing &amp; Inventory" styleClass="field-label" style="-fx-text-fill: #2B322E;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+
+                            <!-- Expiration & Status -->
+                            <HBox spacing="15" GridPane.rowIndex="3" GridPane.columnIndex="1">
+                                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                    <Label text="Expiration Date" styleClass="field-label" style="-fx-text-fill: #2B322E;"/>
+                                    <DatePicker fx:id="expirationDatePicker" maxWidth="Infinity" styleClass="form-control"/>
+                                </VBox>
+                                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                    <Label text="Status" styleClass="field-label" style="-fx-text-fill: #2B322E;"/>
+                                    <ComboBox fx:id="statusComboBox" promptText="Select status" maxWidth="Infinity" styleClass="form-control"/>
+                                </VBox>
+                            </HBox>
+                            <Label text="Lifecycle" styleClass="field-label" style="-fx-text-fill: #2B322E;" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+
+                            <!-- Description -->
+                            <Label text="Description" styleClass="field-label" style="-fx-text-fill: #2B322E;" GridPane.rowIndex="4" GridPane.columnIndex="0" GridPane.valignment="TOP"/>
+                            <TextArea fx:id="descriptionArea" promptText="Describe the benefits and usage of this product..." prefHeight="120" wrapText="true" styleClass="form-control" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                        </GridPane>
+
+                        <Region prefHeight="10"/>
+                        
+                        <HBox spacing="15" alignment="CENTER_RIGHT">
+                            <Button text="Discard" onAction="#handleBack" styleClass="btn-secondary" prefWidth="120"/>
+                            <Button text="Confirm &amp; Save" onAction="#handleSave" styleClass="btn-primary" prefWidth="180"/>
+                        </HBox>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
