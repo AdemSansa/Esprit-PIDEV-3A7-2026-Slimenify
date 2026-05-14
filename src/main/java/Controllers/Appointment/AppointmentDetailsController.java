@@ -102,8 +102,8 @@ public class AppointmentDetailsController {
             java.time.LocalDateTime now = java.time.LocalDateTime.now();
             java.time.LocalDateTime startTime = appointment.getAppointmentDate().atTime(appointment.getStartTime());
             
-            // Allow joining up to 15 minutes after start time
-            if (now.isBefore(startTime.plusMinutes(15))) {
+            // The button should only appear when the appointment starts and disappear after 15 min
+            if (!now.isBefore(startTime) && now.isBefore(startTime.plusMinutes(15))) {
                 joinVideoBtn.setVisible(true);
                 joinVideoBtn.setManaged(true);
             } else {
