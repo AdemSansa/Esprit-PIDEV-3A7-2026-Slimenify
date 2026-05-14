@@ -28,6 +28,7 @@ public class UserService implements Iservice<User> {
         statement.setDate(7, user.getDateOfBirth());
         statement.setString(8, user.getGender());
         statement.setString(9, user.getPhotoUrl());
+
         statement.executeUpdate();
 
         ResultSet rs = statement.getGeneratedKeys();

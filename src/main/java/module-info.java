@@ -33,6 +33,7 @@ module com.example.psy {
 
     requires org.eclipse.angus.mail;
     requires org.apache.pdfbox;
+    requires cloudinary.core;
 
     opens com.example.psy to javafx.fxml;
 
@@ -73,6 +74,10 @@ module com.example.psy {
 
     exports Controllers.dashboards;
     exports Controllers.Therapists;
+    exports Controllers.Product;
+    opens Controllers.Product to javafx.fxml;
+    exports Controllers.Blog;
+    opens Controllers.Blog to javafx.fxml;
 
     // optional but recommended
 }

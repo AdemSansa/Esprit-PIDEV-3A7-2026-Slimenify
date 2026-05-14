@@ -35,7 +35,6 @@ public class TranslationApiService {
         }
         
         // If simple service fails, try the original APIs
-        System.out.println("Simple service failed, trying original APIs...");
         result = tryTranslate(text, targetLang, apiUrl, apiKey);
         if (!result.startsWith("Translation failed") && !result.startsWith("Translation API error")) {
             System.out.println("=== Translation Successful (Main API) ===");
@@ -43,7 +42,6 @@ public class TranslationApiService {
         }
         
         // If main API fails, try fallback without API key
-        System.out.println("Main API failed, trying fallback...");
         result = tryTranslate(text, targetLang, fallbackApiUrl, null);
         if (!result.startsWith("Translation failed") && !result.startsWith("Translation API error")) {
             System.out.println("=== Translation Successful (Fallback API) ===");
@@ -51,7 +49,6 @@ public class TranslationApiService {
         }
         
         // Try alternative API
-        System.out.println("Fallback API failed, trying alternative...");
         result = tryTranslate(text, targetLang, alternativeApiUrl, null);
         if (!result.startsWith("Translation failed") && !result.startsWith("Translation API error")) {
             System.out.println("=== Translation Successful (Alternative API) ===");
@@ -59,7 +56,6 @@ public class TranslationApiService {
         }
         
         // If all APIs fail, return a simple mock translation for testing
-        System.out.println("All APIs failed, returning mock translation for testing");
         System.out.println("=== Translation Complete (Mock) ===");
         return mockTranslate(text, targetLang);
     }

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Controllers.Blog.BlogFeedController">
+
+    <top>
+
+        <VBox spacing="20"
+              style="-fx-padding:30;">
+
+            <HBox spacing="20">
+
+                <Label text="Human stories &amp; ideas"
+                       styleClass="main-title"/>
+
+                <Pane HBox.hgrow="ALWAYS"/>
+
+                <Button fx:id="btnNewBlog" text="New Blog"
+                        onAction="#goToAddBlog"
+                        styleClass="header-btn"/>
+
+            </HBox>
+
+            <TextField fx:id="searchField"
+                       promptText="Search..."
+                       onKeyReleased="#searchBlog"/>
+
+        </VBox>
+
+    </top>
+
+    <center>
+
+        <ScrollPane fitToWidth="true">
+
+            <VBox fx:id="blogContainer"
+                  spacing="20"
+                  style="-fx-padding:25;"/>
+
+        </ScrollPane>
+
+    </center>
+
+</BorderPane>

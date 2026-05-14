@@ -1265,3 +1265,67 @@
     -fx-font-size: 18px;
     -fx-font-weight: bold;
 }
+.main-title {
+
+    -fx-font-size: 28px;
+
+    -fx-font-weight: bold;
+}
+
+.blog-card {
+
+    -fx-background-color: white;
+
+    -fx-padding: 20;
+
+    -fx-background-radius: 20;
+
+    -fx-effect: dropshadow(
+            gaussian,
+            rgba(0,0,0,0.08),
+            15,
+            0,
+            0,
+            4
+    );
+}
+
+.blog-title {
+
+    -fx-font-size: 22px;
+
+    -fx-font-weight: bold;
+}
+
+.header-btn {
+
+    -fx-background-color: #627255;
+
+    -fx-text-fill: white;
+
+    -fx-background-radius: 15;
+
+    -fx-padding: 12 18;
+
+/* ===============================
+   GENERIC CARD & SECTION
+   =============================== */
+
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 10, 0, 0, 4);
+    -fx-border-color: #E8EACC;
+    -fx-border-width: 1;
+    -fx-border-radius: 15;
+}
+
+.section-header {
+    -fx-font-size: 16px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #2B322E;
+    -fx-padding: 0 0 5 0;
+    -fx-border-color: transparent transparent #E8EACC transparent;
+    -fx-border-width: 0 0 2 0;
+}
