@@ -33,6 +33,12 @@
                 onAction="#confirmAppointment"
                 visible="false"
                 managed="false"/>
+        <Button fx:id="joinVideoBtn"
+                text="Join Video Call"
+                onAction="#joinVideoCall"
+                visible="false"
+                managed="false"
+                style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold;"/>
         <Button fx:id="cancelBtn"
                 text="Cancel Appointment"
                 onAction="#cancelAppointment"/>

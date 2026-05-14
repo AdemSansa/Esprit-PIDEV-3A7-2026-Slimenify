@@ -29,6 +29,8 @@ public class AppointmentDetailsController {
     @FXML
     private Button confirmBtn;
     @FXML
+    private Button joinVideoBtn;
+    @FXML
     private Button cancelBtn;
 
     @FXML
@@ -92,6 +94,26 @@ public class AppointmentDetailsController {
         boolean canAddNote = isTherapist && !"pending".equalsIgnoreCase(status);
         addNoteBtn.setVisible(canAddNote);
         addNoteBtn.setManaged(canAddNote);
+
+        // Handle Video Call Button visibility
+        if (appointment.getJitsiUrl() != null && !appointment.getJitsiUrl().isEmpty() &&
+            !"completed".equalsIgnoreCase(status) && !"cancelled".equalsIgnoreCase(status)) {
+            
+            java.time.LocalDateTime now = java.time.LocalDateTime.now();
+            java.time.LocalDateTime startTime = appointment.getAppointmentDate().atTime(appointment.getStartTime());
+            
+            // Allow joining up to 15 minutes after start time
+            if (now.isBefore(startTime.plusMinutes(15))) {
+                joinVideoBtn.setVisible(true);
+                joinVideoBtn.setManaged(true);
+            } else {
+                joinVideoBtn.setVisible(false);
+                joinVideoBtn.setManaged(false);
+            }
+        } else {
+            joinVideoBtn.setVisible(false);
+            joinVideoBtn.setManaged(false);
+        }
 
         loadNotes();
     }
@@ -166,6 +188,13 @@ public class AppointmentDetailsController {
             closeWindow();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void joinVideoCall() {
+        if (appointment.getJitsiUrl() != null && !appointment.getJitsiUrl().isEmpty()) {
+            Service.VideoCallService.openMeetingInBrowser(appointment.getJitsiUrl());
         }
     }
 

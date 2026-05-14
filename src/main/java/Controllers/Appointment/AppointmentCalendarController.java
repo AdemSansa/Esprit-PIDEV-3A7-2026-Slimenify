@@ -458,11 +458,12 @@ public class AppointmentCalendarController {
 
     private void openVideoCall(Appointment appointment) {
         try {
-            // generate meeting link
-            String meetingLink = Service.VideoCallService.generateMeetingLink(appointment.getId());
-
-            // open in system browser
-            Service.VideoCallService.openMeetingInBrowser(meetingLink);
+            // open in system browser if url exists
+            if (appointment.getJitsiUrl() != null && !appointment.getJitsiUrl().isEmpty()) {
+                Service.VideoCallService.openMeetingInBrowser(appointment.getJitsiUrl());
+            } else {
+                System.out.println("No Jitsi URL found for this appointment.");
+            }
 
             // mark appointment in-progress
             appointment.setStatus("in-progress");
