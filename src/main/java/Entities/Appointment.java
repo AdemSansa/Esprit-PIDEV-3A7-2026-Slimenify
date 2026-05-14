@@ -13,6 +13,7 @@ public class Appointment {
     private String type; // 'Video Call' or 'Presential'
     private int therapistId;
     private int patientId;
+    private String jitsiUrl;
 
     public Appointment() {
     }
@@ -39,6 +40,7 @@ public class Appointment {
                 ", type='" + type + '\'' +
                 ", therapistId=" + therapistId +
                 ", patientId=" + patientId +
+                ", jitsiUrl='" + jitsiUrl + '\'' +
                 '}';
     }
 
@@ -104,5 +106,13 @@ public class Appointment {
 
     public void setPatientId(int patientId) {
         this.patientId = patientId;
+    }
+
+    public String getJitsiUrl() {
+        return jitsiUrl;
+    }
+
+    public void setJitsiUrl(String jitsiUrl) {
+        this.jitsiUrl = jitsiUrl;
     }
 }

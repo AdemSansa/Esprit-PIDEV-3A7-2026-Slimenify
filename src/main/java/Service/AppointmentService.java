@@ -53,8 +53,8 @@ public class AppointmentService {
 
         String sql = """
                 INSERT INTO appointment
-                (appointment_date, start_time, end_time, status, type, therapist_id, patient_id)
-                VALUES (?,?,?,?,?,?,?)
+                (appointment_date, start_time, end_time, status, type, therapist_id, patient_id, jitsi_url)
+                VALUES (?,?,?,?,?,?,?,?)
                 """;
 
         PreparedStatement ps = cnx.prepareStatement(sql);
@@ -66,6 +66,7 @@ public class AppointmentService {
         ps.setString(5, appointment.getType());
         ps.setInt(6, appointment.getTherapistId());
         ps.setInt(7, appointment.getPatientId());
+        ps.setString(8, appointment.getJitsiUrl());
 
         ps.executeUpdate();
 
@@ -95,7 +96,8 @@ public class AppointmentService {
                                     end_time = ?,
                                     status = ?,
                                     therapist_id = ?,
-                                    patient_id = ?
+                                    patient_id = ?,
+                                    jitsi_url = ?
                                 WHERE id = ?
                                 """;
 
@@ -107,7 +109,8 @@ public class AppointmentService {
         ps.setString(4, appointment.getStatus());
         ps.setInt(5, appointment.getTherapistId());
         ps.setInt(6, appointment.getPatientId());
-        ps.setInt(7, appointment.getId());
+        ps.setString(7, appointment.getJitsiUrl());
+        ps.setInt(8, appointment.getId());
 
         ps.executeUpdate();
 
@@ -298,6 +301,7 @@ public class AppointmentService {
         a.setType(rs.getString("type"));
         a.setTherapistId(rs.getInt("therapist_id"));
         a.setPatientId(rs.getInt("patient_id"));
+        a.setJitsiUrl(rs.getString("jitsi_url"));
 
         return a;
     }
@@ -334,8 +338,8 @@ public class AppointmentService {
 
         String sql = """
                 INSERT INTO appointment
-                (appointment_date, start_time, end_time, status, type, therapist_id, patient_id)
-                VALUES (?,?,?,?,?,?,?)
+                (appointment_date, start_time, end_time, status, type, therapist_id, patient_id, jitsi_url)
+                VALUES (?,?,?,?,?,?,?,?)
                 """;
 
         PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -347,6 +351,7 @@ public class AppointmentService {
         ps.setString(5, appointment.getType());
         ps.setInt(6, appointment.getTherapistId());
         ps.setInt(7, appointment.getPatientId());
+        ps.setString(8, appointment.getJitsiUrl());
 
         ps.executeUpdate();
 
